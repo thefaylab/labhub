@@ -15,18 +15,75 @@ In all cases, do things early enough so that you can get approval for charging u
 
 ### Travel registration
 
-_ALL_ overnight business travel (whether university sponsored or not) must be pre-authorized via a travel authorization.
+__ALL__ overnight business travel (whether university sponsored or not) must be pre-authorized via a travel authorization.
 This is necessary for you to be covered by university insurance.
 
-_ALL_ out of state travel must be registered via Terra Dotta, link at: https://www.umassd.edu/peoplesoftfinance/ 
+_Travel authorizations must be submitted and approved __prior__ to booking/paying for travel. GF cannot guarantee that charges made ahead of travel approval will be refunded._  
+
+__ALL__ out of state travel must be registered via Terra Dotta, link at: https://www.umassd.edu/peoplesoftfinance/  
+
+Day-trip approved travel just requires an expense report. This will most often likely just entail detail on mileage between SMAST and your destination.   
 
 
 ### Travel authorization procedure
 
-1. Confirm with Gavin about travel, and submit detailed budget for approval.
+1. Confirm with Gavin about travel, and submit detailed budget to him (along with funding sources) for approval. [example below]
 2. If travel is out-of-state, complete Terra Dotta registration.
 3. Assemble detailed travel budget and supporting documents.
+4. If applying for DFO/IMS/university travel funds, complete travel application forms.
 3. Complete Travel Authorization (TA) Form and work with Chris Fox - Chris will enter the TA into the system once you have all the necessary information.
-_NB. Non-university sponsored business travel (e.g. travel reimbursed directly by sponsor) requires you to complete a paper TA. Only charges made to university accounts (e.g. procard) 
+_NB. Non-university sponsored business travel (e.g. travel reimbursed directly by sponsor) requires you to complete a paper TA. Only charges made to university accounts (e.g. procard) will be needed for this._
+4. Once the TA is approved, book travel. Flights should be booked through university travel agents (Egencia, travel collaborative) UNLESS you can document significant savings (save screencaps and dates). Flights/hotels can be paid for via university procard (see Gavin or Chris Fox). Meeting registrations should be purchased via BuyWays rather than by procard when possible.
 
-....work in progress....
+### Expense report
+
+Once returning from travel, submit an expense report along with receipts for charges to Chris Fox.  The easiest way to construct an expense report is to put actual costs on the itemized list of expenses you detailed in your email to Gavin at the start of the TA process.
+
+Submit your expenses in a timely manner. Most delays with per diem reimbursements are associated with delays in completing expense reports.
+
+
+### Additional tips
+
+Please try to calculate estimated costs for these as fully and accurately as possible. This helps in terms of both efficiency (fewer emails), but also helps with allocation of travel costs to accounts - remember that by confirming your travel Gavin is authorizing the university to make charges against particular grants, the more accurate that cost estimates are the easier this is.  
+
+The TA form is good for your calculations but doesn't tell the full story. The email to Gavin to confirm travel is a good opportunity to provide detail on travel arrangements (this is especially useful if you are sharing costs with someone else or combining personal travel, etc.).  
+
+At the TA stage - don't spend too much time figuring out the cheapest possible options. Make things easy on yourself and use the approved rates for hotels, per diem etc.
+
+While cost-saving is always appreciated, please be aware of tradeoffs related to convenience and your time. There is a cost to doing business. If you have approval for travel that means all reasonable travel costs will be paid for. Don't fall into the trap of thinking that everything has to be done on a shoestring - this invariably is more costly when valuing your time.  
+
+It is your responsibility to ask Chris to enter your travel authorization and make bookings / charges.    
+
+Hotels: Generally, you are eligible for government rates when booking hotels.  
+
+If sharing costs for travel (e.g. sharing hotel rooms), then the split costs need to appear on everyone's TAs (e.g. split the cost of the hotel room between each person on the TA). This is because you all have individual expense reports - it raises flags at other administrative levels when travel expense reports have charges for some expected items but not others.  
+
+Try not to nickel and dime in your expense reports. Except for larger costs (e.g. taxi from your hotel to the airport), your per diem is intended to cover your daily expenses while on work travel.  
+
+Don't assume that you know the way the university wants to deal with travel expenses, particularly when subject to federal travel rules. A quick phone call to Chris or Gavin is preferable to waiting on email chains or guessing based on possibly wrong Google search results.  
+
+You can borrow Chris' (or mine) university credit card (pro card) to make charges such as airfare, conference registration, hotels, etc. Most hotels have procedures in place to accept payment from a credit card that is not present during the stay, but this sometimes requires a phone call or email in advance.  
+
+
+### Example travel detail email (be sure to check current correct rates):
+
+PICES annual meeting, November 2016  
+
+Meeting website: http://meetings.pices.int/meetings/annual/2016/pices/Program  
+Poster Presentation: "Identifying robust model selection tools for including environmental links to recruitment in North Pacific groundfish stock assessments"  
+Acceptance/session schedule information and abstract attached.  
+
+Flight: BOS-SAN  $420 (Depart 11/3, Return 11/11)  
+FHVN-BOS personal vehicle, $66 (124 miles return at $0.535 per mile)  
+Airport parking 11/3-11/11   $161 (8 days at $138 per week + $23 per day)  
+Hotel (11/3-11/11) $1524  (7 nights at $169 & 1 night at $141 - meeting hotel not available 11/3)  
+Ground transportation in SAN $100  
+Per Diem $544 (8.5 days at $64 per day, per FY17 GSA rate for San Diego CA)  
+Conference registration $210  ($275 CAN)  
+
+Total expenses: $3,025  
+
+Reallocation:  
+I will request $500 from the Provost's Office through the faculty travel grant program.  
+Remainder to be allocated to ST 109011  
+
