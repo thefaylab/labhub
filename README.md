@@ -1,4 +1,11 @@
-# Welcome to Labhub
+# Welcome to the Fay lab Labhub
+
+The Faylab labhub is a work in progress.  
+
+* Lab meeting schedule: https://github.com/thefaylab/labhub/wiki/Lab-meetings
+* Travel procedures
+
+
 The Labhub workshop and repository were created as part of the [**Open Science at OHSU**](http://www.ohsu.edu/blogs/researchnews/2017/12/04/open-science-panel-the-evolving-landscape-of-scientific-communication-dec-8/) event on December, 8 2017.
 
 The Labhub repository was adapted from a Gitlab repository, which [Dr. Alison Hill](https://alison.rbind.io/) and her colleagues built to onboard new students and postdoctoral fellows, and facilitate data management, transparency, the long-term value of research contributions, and a safe academic space.
