@@ -3,7 +3,7 @@
 The Faylab labhub is a work in progress.  
 
 * Lab meeting schedule: https://github.com/thefaylab/labhub/wiki/Lab-meetings
-* Travel procedures
+* Travel procedures: https://github.com/thefaylab/labhub/blob/master/02-protocols/Travel.Rmd
 
 
 The Labhub workshop and repository were created as part of the [**Open Science at OHSU**](http://www.ohsu.edu/blogs/researchnews/2017/12/04/open-science-panel-the-evolving-landscape-of-scientific-communication-dec-8/) event on December, 8 2017.
