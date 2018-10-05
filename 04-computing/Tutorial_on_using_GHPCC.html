@@ -120,7 +120,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Tutorial on using the GHPCC (Green High Performance Computing Cluster)</h1>
 <h4 class="author"><em>Vanessa Trijoulet</em></h4>
-<h4 class="date"><em>10 August, 2018</em></h4>
+<h4 class="date"><em>04 October, 2018</em></h4>
 
 </div>
 
@@ -259,7 +259,311 @@ Rscript script_name.R  </code></pre>
 <li><p>Kill all jobs at once:</p>
 <pre><code>bkill -u username 0</code></pre></li>
 </ul>
+</div>
+<div id="running-scripts-in-sequence-using-batch-jobs" class="section level1">
+<h1>Running scripts in sequence using batch jobs</h1>
+<p>(Sam Truesdell <a href="mailto:struesdell@gmri.org">struesdell@gmri.org</a>)</p>
+<p>Sometimes it is useful to submit multiple jobs at once but also ensure that they will run in a particular order. For example, say you want to repeat a simulation 1000 times and then plot the results. You can write a program that (1) sends an array job (an array job being a set of identical scripts such as simulation repetitions); and (2) waits until the entire array is finished and then reads in the results from the 1000 simulations and makes some plots. This is similar to the example above except it emphasizes that you can submit several jobs at once and that you can easily specify an order of execution for the scripts.</p>
+<p>This is probably best described by an example. Below are three files: a control script, an array script and a completion script. You can try the procedure described below yourself by copying the three scripts into blank text files (with names matching the names in this example) and uploading them to your directory on the GHPCC. Don’t forget to change the extensions to <strong>.sh</strong> (stands for shell file).</p>
+<div id="control-script" class="section level4">
+<h4>Control script</h4>
+<p>script name: <strong>runsleep.sh</strong><br />
+action: submits the two other scripts to the queue.</p>
+<pre><code>#!/bin/bash
+
+#BSUB -W 00:15                   # How much time does your job need (HH:MM)
+#BSUB -q short                   # Which queue {short, long, parallel, GPU, interactive}
+#BSUB -J &quot;runsleep&quot;              # Job Name
+#BSUB -R rusage[mem=10000]       # Specify memory usage (needlessly high for this job)
+#BSUB -n 1                       # Number of processors to use
+
+#BSUB -o &quot;./%J.o&quot;                # name for the output file
+#BSUB -e &quot;./%J.e&quot;                # name for the error file
+
+bsub &lt; sleep100.sh               # submit the sleep100 shell file
+bsub &lt; echocomplete.sh           # submit the echocomplete shell file</code></pre>
+</div>
+<div id="array-script" class="section level4">
+<h4>Array script</h4>
+<p>script name: <strong>sleep100.sh</strong><br />
+action: executes the primary code (which in this case is simply sleeping). Pay special attention to the bracketed suffix on the name below <code>sleep100[1-3]</code>. This indicates that an array of 3 identical jobs should be submitted to run in parallel. If you were actually using this for your research this could entail submitting your individual simulation runs.</p>
+<pre><code>#!/bin/bash
+
+#BSUB -W 00:15              # How much time does your job need (HH:MM)
+#BSUB -q short              # Which queue {short, long, parallel, GPU, interactive}
+#BSUB -J &quot;sleep100[1-3]&quot;    # Job Name (and parallel array specification)
+#BSUB -R rusage[mem=10000]  # Specify memory usage (needlessly high for this job)
+#BSUB -n 1                  # Number of processors to use
+
+#BSUB -o &quot;./%J.o&quot;           # name for the output file
+#BSUB -e &quot;./%J.e&quot;           # name for the error file
+
+sleep 100                   # sleep for 100 seconds (this is the operative code and 
+                            # would otherwise be something like Rscript ./runSim.R --vanilla)
+
+echo &quot;sleep100.sh: sleep complete&quot;  # print something saying the job is done</code></pre>
+</div>
+<div id="completion-script" class="section level4">
+<h4>Completion script</h4>
+<p>script name: <strong>echocomplete.sh</strong><br />
+action: prints text so you know that the job has run to completion. If you were using something similar for your research, this script would be doing something like reading in the results of the simulations and plotting them but here we’re just reporting that the job is done. The important thing here is the command <code>#BSUB -w 'done(sleep100[1-3])'</code>. This specifies that this script should wait until the <strong>sleep100.sh</strong> script is complete before executing its code.</p>
+<pre><code>#!/bin/bash
+
+#BSUB -W 00:15                  # How much time does your job need (HH:MM)
+#BSUB -q short                  # Which queue {short, long, parallel, GPU, interactive}
+#BSUB -J &quot;echocomplete&quot;         # Job Name
+#BSUB -R rusage[mem=10000]      # Specify memory usage (needlessly high for this job)
+#BSUB -n 1                      # Number of processors to use
+
+#BSUB -o &quot;./%J.o&quot;               # name for the output file
+#BSUB -e &quot;./%J.e&quot;               # name for the error file
+
+#BSUB -w 'done(sleep100[1-3])'  # Operative line for dependencies. 
+                                # Wait until done with sleep100 job.
+
+echo &quot;echocomplete.sh: job complete&quot;  # print a line indicating the job is finished</code></pre>
+</div>
+<div id="convert-files-to-a-readable-format" class="section level3">
+<h3>Convert files to a readable format</h3>
+<p>Once these three files have been uploaded to your directory they have to be converted to a format that can be read properly by the GHPCC which runs using Linux. Line breaks differ between Windows and Linux/Unix so we have to specify a conversion. Once you have uploaded the files, navigate to the directory using the command line and type these commands:</p>
+<pre><code>dos2unix runsleep.sh
+dos2unix sleep100.sh
+dos2unix echocomplete.sh</code></pre>
+<p>If entered correctly you should get the message <code>dos2unix: converting file &lt;filename here&gt;.sh to UNIX format ...</code> after each entry. Now the files can be read properly.</p>
+</div>
+<div id="run-the-entire-job" class="section level3">
+<h3>Run the entire job</h3>
+<p>As long as you have navigated to the directory where you stored these three files, you can submit the <strong>runsleep.sh</strong> file using <code>bsub &lt; runsleep.sh</code> (note the slightly different syntax from the previous bsub version above – you need the <strong>&lt;</strong>). The whole job should take a couple of minutes to run (recall we told the program to sleep for 100 seconds).</p>
+<p>As the job runs you can check the progress using <code>bjobs</code>. If you keep typing <code>bjobs</code> into the console you should be able to see the progression of:</p>
+<p>1. <strong>runsleep.sh</strong> submitted and pending;</p>
+<table>
+<thead>
+<tr class="header">
+<th>JOBID</th>
+<th>USER</th>
+<th>STAT</th>
+<th>QUEUE</th>
+<th>FROM_HOST</th>
+<th>EXEC_HOST</th>
+<th>JOB_NAME</th>
+<th>SUBMIT_TIME</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1001</td>
+<td>userID</td>
+<td>PEND</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>runsleep</td>
+<td>Oct 2 09:33</td>
+</tr>
+</tbody>
+</table>
+<p>2. <strong>runsleep.sh</strong> running and causing three versions of <strong>sleep100.sh</strong> to be submitted (and pending);</p>
+<table>
+<thead>
+<tr class="header">
+<th>JOBID</th>
+<th>USER</th>
+<th>STAT</th>
+<th>QUEUE</th>
+<th>FROM_HOST</th>
+<th>EXEC_HOST</th>
+<th>JOB_NAME</th>
+<th>SUBMIT_TIME</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1001</td>
+<td>userID</td>
+<td>RUN</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>runsleep</td>
+<td>Oct 2 09:33</td>
+</tr>
+<tr class="even">
+<td>1002</td>
+<td>userID</td>
+<td>PEND</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>*eep100[1]</td>
+<td>Oct 2 09:33</td>
+</tr>
+<tr class="odd">
+<td>1002</td>
+<td>userID</td>
+<td>PEND</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>*eep100[2]</td>
+<td>Oct 2 09:33</td>
+</tr>
+<tr class="even">
+<td>1002</td>
+<td>userID</td>
+<td>PEND</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>*eep100[3]</td>
+<td>Oct 2 09:33</td>
+</tr>
+</tbody>
+</table>
+<p>3. <strong>echocomplete.sh</strong> waiting in the queue without executing (i.e., pending) until all of the <strong>sleep100.sh</strong> separate runs are complete; and</p>
+<table>
+<thead>
+<tr class="header">
+<th>JOBID</th>
+<th>USER</th>
+<th>STAT</th>
+<th>QUEUE</th>
+<th>FROM_HOST</th>
+<th>EXEC_HOST</th>
+<th>JOB_NAME</th>
+<th>SUBMIT_TIME</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1002</td>
+<td>userID</td>
+<td>RUN</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>*eep100[1]</td>
+<td>Oct 2 09:33</td>
+</tr>
+<tr class="even">
+<td>1002</td>
+<td>userID</td>
+<td>RUN</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>*eep100[3]</td>
+<td>Oct 2 09:33</td>
+</tr>
+<tr class="odd">
+<td>1002</td>
+<td>userID</td>
+<td>RUN</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>*eep100[2]</td>
+<td>Oct 2 09:33</td>
+</tr>
+<tr class="even">
+<td>1003</td>
+<td>userID</td>
+<td>PEND</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>*ocomplete</td>
+<td>Oct 2 09:33</td>
+</tr>
+</tbody>
+</table>
+<p>4. <strong>echocomplete.sh</strong> running.</p>
+<table>
+<thead>
+<tr class="header">
+<th>JOBID</th>
+<th>USER</th>
+<th>STAT</th>
+<th>QUEUE</th>
+<th>FROM_HOST</th>
+<th>EXEC_HOST</th>
+<th>JOB_NAME</th>
+<th>SUBMIT_TIME</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1003</td>
+<td>userID</td>
+<td>RUN</td>
+<td>short</td>
+<td></td>
+<td></td>
+<td>*ocomplete</td>
+<td>Oct 2 09:33</td>
+</tr>
+</tbody>
+</table>
+<p>You can check the results by opening the <strong>.o</strong> and <strong>.e</strong> report files (they will appear in the directory) through your interface program or in the console using the command <code>cat</code>. For example, to check the output from job 1003 you could type <code>cat 1003.o</code> (note: your job IDs will be longer than 4 digits). Below is some example output. Note that <code>echocomplete.sh: job complete</code> is what we told it to print in the file <strong>echocompte.sh</strong>. This is followed by other information about the job, including the script that was submitted.</p>
+<pre><code>echocomplete.sh: job complete
+
+------------------------------------------------------------
+[Some job information here]
+
+Your job looked like:
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+
+#BSUB -W 00:15                  # How much time does your job need (HH:MM)
+#BSUB -q short                  # Which queue {short, long, parallel, GPU, interactive}
+#BSUB -J &quot;echocomplete&quot;         # Job Name
+#BSUB -R rusage[mem=10000]      # Specify memory usage (needlessly high for this job)
+#BSUB -n 1                      # Number of processors to use
+
+#BSUB -o &quot;./%J.o&quot;               # name for the output file
+#BSUB -e &quot;./%J.e&quot;               # name for the error file
+
+#BSUB -w 'done(sleep100[1-3])'  # Operative line for dependencies. 
+                                # Wait until done with sleep100 job.
+
+echo &quot;echocomplete.sh: job complete&quot;  # print a line indicating the job is finished
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.18 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     10000.00 MB
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   1 sec.
+    Turnaround time :                            103 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file &lt;./1003.e&gt; for stderr output of this job.</code></pre>
+</div>
+<div id="notes-1" class="section level3">
+<h3>Notes</h3>
+<ul>
+<li><p>If you have an array submission like we do here and you want to alter the number of parallel procedures (i.e., the [1-3] suffix) you need to change the syntax in two places: (1) the naming in the array script (i.e., change the [1-3] in <code>sleep100[1-3]</code> to <code>sleep100[1-5]</code> for 5 repetitions); and (2) in the completion script you would change <code>'done(sleep100[1-3])'</code> to <code>'done(sleep100[1-5])'</code>.</p></li>
+<li><p>Any error messages from your code will be stored in the files with the extension <strong>.e</strong>. Any output will be stored in the files with extension <strong>.o</strong>. You can access them using the <code>cat</code> command in the console or through your file interface program.</p></li>
+<li><p>If you are designing simulations (e.g., in R) you want to do it so that you can easily run in parallel. The outer loop should indicate the simulations so you can easily change your number of simulations. If you want to run 1000 simulations in total you could do something like change the number of repetitions per script to 10 and run a job with an array of 100.</p></li>
+<li><p>I tend to commit plenty of mistakes as I’m working on this stuff. With the <code>-w 'done()'</code> command this means that I sometimes have jobs in my queue that will never run. The command <code>qdel JOBID</code> (you can find the job ID using the <code>bjobs</code> command) will delete the specified job from your queue.</p></li>
+<li><p>If you are like me you may find this perplexing. Feel free to e-mail me at <a href="mailto:struesdell@gmri.org">struesdell@gmri.org</a>. I’m not a computer programmer and I only know what I’ve found necessary for my work but I might be able to help with some basics!</p></li>
+<li><p>I’ve found UMASS GHPCC support to be very responsive – you can e-mail them at <a href="mailto:hpcc-support@umassmed.edu">hpcc-support@umassmed.edu</a>. They helped me figure out <code>-w 'done()'</code> and essentially provided me this example.</p></li>
+</ul>
 <hr />
+</div>
 </div>
 
 
